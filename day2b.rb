@@ -1,11 +1,14 @@
 data = DATA.read.strip
 
 puts data.lines.map { |line|
-  l, w, h = line.split("x").map(&:to_i)
-  sides = [l*w, w*h, h*l]
-  min_side = sides.min
+  l, w, h = sides = line.split("x").map(&:to_i)
 
-  sides.map { |s| 2 * s }.inject(:+) + min_side
+  short1, short2, * = sides.sort
+
+  perimeter = short1 * 2 + short2 * 2
+  bow = l * w * h
+
+  perimeter + bow
 }.inject(:+)
 
 __END__
