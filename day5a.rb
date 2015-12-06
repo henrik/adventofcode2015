@@ -3,7 +3,7 @@ data = DATA.read.strip
 puts data.each_line.count { |line|
   line.count("aeiou") >= 3 &&
     line =~ /(.)\1/ &&
-    line !~ /(ab|cd|pq|xy)/
+    line !~ /ab|cd|pq|xy/
 }
 
 __END__
