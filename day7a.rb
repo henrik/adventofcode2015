@@ -31,9 +31,6 @@ data.each_line do |line|
   end
 end
 
-map["b"] = 3176
-
-
 def find_value_of(thing)
   case thing
   when Integer
