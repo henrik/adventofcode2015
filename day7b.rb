@@ -31,7 +31,8 @@ data.each_line do |line|
   end
 end
 
-map["b"] = 3176
+result_from_7a = 3176
+map["b"] = result_from_7a
 
 
 def find_value_of(thing)
