@@ -3,10 +3,10 @@ data = DATA.read.strip
 p data.each_line.map { |line|
   line = line.chomp
 
+  encoded_length = line.inspect.length
   code_length = line.length
-  value_length = eval(line).length  # :O!
 
-  code_length - value_length
+  encoded_length - code_length
 }.inject(:+)
 
 __END__
