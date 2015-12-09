@@ -1,5 +1,3 @@
-require "set"
-
 data = DATA.read.strip
 
 distances = {}
