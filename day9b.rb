@@ -11,7 +11,7 @@ data.each_line do |line|
   distances[[loc2, loc1]] = dist
 end
 
-# Now find the shortest leg by brute force.
+# Now find the shortest leg by brute force (only 8! = 40 320 possible routes).
 
 locations = distances.keys.flatten.uniq
 route_lengths = {}
