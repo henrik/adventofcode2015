@@ -60,23 +60,28 @@ class JSONParser
 
   def parse_object
     scan "{"
-    value = parse_key_value_pair
+    value = parse_key_value_pairs
     scan "}"
     value
+  end
+
+  def parse_key_value_pairs
+    hash = parse_key_value_pair
+    more = maybe_parse_another_key_value_pair
+    hash.merge(more)
   end
 
   def parse_key_value_pair
     key = parse_string
     scan ":"
     value = parse_anything
-    more_values = maybe_parse_another_key_value_pair
-    { key => value }.merge(more_values)
+    { key => value }
   end
 
   def maybe_parse_another_key_value_pair
     if peek == ","
       scan ","
-      parse_key_value_pair
+      parse_key_value_pairs
     else
       {}
     end
@@ -84,19 +89,21 @@ class JSONParser
 
   def parse_array
     scan "["
+    value = parse_array_values
+    scan "]"
+    value
+  end
+
+  def parse_array_values
     value = parse_anything
     more_values = maybe_parse_another_array_element
-    scan "]"
     [ value, *more_values ]
   end
 
   def maybe_parse_another_array_element
     if peek == ","
       scan ","
-      [
-        parse_anything,
-        *maybe_parse_another_array_element,
-      ]
+      parse_array_values
     else
       []
     end
