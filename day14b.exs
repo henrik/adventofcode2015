@@ -19,12 +19,10 @@ defmodule Day14.B do
   end
 
   defp time_passes(reindeer) do
-    Enum.reduce 1..@total_seconds, reindeer, fn(second, iterated_reindeer) ->
-      state_at_second(iterated_reindeer, second)
-    end
+    Enum.reduce 1..@total_seconds, reindeer, &state_at_second/2
   end
 
-  defp state_at_second(reindeer, second) do
+  defp state_at_second(second, reindeer) do
     reindeer
     |> Enum.map(&state_at_second_for_one(&1, second))
     |> award_leading_reindeer
