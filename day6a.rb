@@ -18,7 +18,7 @@ data.each_line do |line|
   end
 end
 
-puts grid.values.select { |x| x }
+puts grid.values.select { |x| x }.length
 
 __END__
 toggle 461,550 through 564,900
