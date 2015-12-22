@@ -1,23 +1,29 @@
+# This solution found the right value, but I'm not sure it's guaranteed to.
+# I guess it depends on the extent to which the rules overlap.
+
 raw_map, molecule = DATA.read.strip.split("\n\n")
 
 # Can't be a Hash since keys are not unique.
-map = raw_map.lines.map { |line| line.strip.split(" => ") }
+# Sort these with longest-first, in case that helps.
+map = raw_map.lines.map { |line| line.strip.split(" => ") }.sort_by { |k, v| -v.length }
 
-require "set"
-creations = Set.new
+count = 0
+mol = molecule
 
-map.each do |from, unto|
-  re = Regexp.new(Regexp.escape(from))
-  parts = molecule.split(/(#{re})/)
+# Because endless loops are scary.
+1000.times do
+  map.each do |from, unto|
+    new_mol = mol.sub(unto, from)
 
-  parts.each.with_index do |this_part, i|
-    if this_part == from
-      creations << [ *parts.first(i), unto, *parts.drop(i.succ) ].join
-    end
+    count += 1 if new_mol != mol
+
+    mol = new_mol
   end
+
+  break if mol == "e"
 end
 
-p creations.length
+p count
 
 __END__
 Al => ThF
