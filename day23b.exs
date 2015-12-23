@@ -1,4 +1,4 @@
-defmodule Day23.A do
+defmodule Day23.B do
   require Integer
 
   defmodule State do
@@ -124,4 +124,4 @@ defmodule Day23.A do
   end
 end
 
-Day23.A.run
+Day23.B.run
