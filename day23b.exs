@@ -9,20 +9,16 @@ defmodule Day23.A do
     initial_state = %State{}
     instructions = parse_instructions
 
-    #IO.inspect initial_state
-
     run(initial_state, instructions)
   end
 
   def run(%State{instruction: instruction_index} = state, instructions) do
     case Enum.at(instructions, instruction_index, :out_of_bounds) do
       :out_of_bounds ->
-        IO.puts "Out of bounds! Terminate! State:"
+        IO.puts "Terminate! State:"
         IO.inspect state
       instruction ->
         new_state = apply_instruction(state, instruction)
-        #IO.puts "apply instruction ##{inspect instruction_index} : #{inspect instruction}"
-        #IO.inspect new_state
         run(new_state, instructions)
     end
   end
