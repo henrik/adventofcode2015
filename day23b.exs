@@ -53,9 +53,7 @@ defmodule Day23.A do
   defp advance(state), do: jump(state, 1)
 
   defp jump(state, offset) do
-    struct(state, [
-      instruction: state.instruction + offset,
-    ])
+    struct(state, instruction: state.instruction + offset)
   end
 
   # Parsing
