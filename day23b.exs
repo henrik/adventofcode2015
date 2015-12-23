@@ -47,19 +47,21 @@ defmodule Day23.A do
       instruction: state.instruction + 1,
     ])
   end
-  defp apply_instruction(state, {:jump, offset}) do
+  defp apply_instruction(state, {:jump, offset}), do: jump(state, offset)
+
+  defp apply_instruction(%State{a: a} = state, {:jump_if_even, :a, offset}) when Integer.is_even(a), do: jump(state, offset)
+  defp apply_instruction(%State{b: b} = state, {:jump_if_even, :b, offset}) when Integer.is_even(b), do: jump(state, offset)
+  defp apply_instruction(state, {:jump_if_even, _reg, _offset}), do: jump(state, 1)
+
+  defp apply_instruction(%State{a: a} = state, {:jump_if_one, :a, offset}) when a == 1, do: jump(state, offset)
+  defp apply_instruction(%State{b: b} = state, {:jump_if_one, :b, offset}) when b == 1, do: jump(state, offset)
+  defp apply_instruction(state, {:jump_if_one, _reg, _offset}), do: jump(state, 1)
+
+  defp jump(state, offset) do
     struct(state, [
       instruction: state.instruction + offset,
     ])
   end
-
-  defp apply_instruction(%State{a: a} = state, {:jump_if_even, :a, offset}) when Integer.is_even(a), do: apply_instruction(state, {:jump, offset})
-  defp apply_instruction(%State{b: b} = state, {:jump_if_even, :b, offset}) when Integer.is_even(b), do: apply_instruction(state, {:jump, offset})
-  defp apply_instruction(state, {:jump_if_even, _reg, _offset}), do: apply_instruction(state, {:jump, 1})
-
-  defp apply_instruction(%State{a: a} = state, {:jump_if_one, :a, offset}) when a == 1, do: apply_instruction(state, {:jump, offset})
-  defp apply_instruction(%State{b: b} = state, {:jump_if_one, :b, offset}) when b == 1, do: apply_instruction(state, {:jump, offset})
-  defp apply_instruction(state, {:jump_if_one, _reg, _offset}), do: apply_instruction(state, {:jump, 1})
 
   # Parsing
 
