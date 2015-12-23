@@ -30,22 +30,19 @@ defmodule Day23.A do
   # Applying
 
   defp apply_instruction(state, {:inc, reg}) do
-    struct(state, [
-      {reg, Map.get(state, reg) + 1},
-      instruction: state.instruction + 1,
-    ])
+    state
+    |> struct([{reg, Map.get(state, reg) + 1}])
+    |> advance
   end
   defp apply_instruction(state, {:half, reg}) do
-    struct(state, [
-      {reg, round(Map.get(state, reg) / 2)},
-      instruction: state.instruction + 1,
-    ])
+    state
+    |> struct([{reg, round(Map.get(state, reg) / 2)}])
+    |> advance
   end
   defp apply_instruction(state, {:triple, reg}) do
-    struct(state, [
-      {reg, Map.get(state, reg) * 3},
-      instruction: state.instruction + 1,
-    ])
+    state
+    |> struct([{reg, Map.get(state, reg) * 3}])
+    |> advance
   end
   defp apply_instruction(state, {:jump, offset}), do: jump(state, offset)
 
@@ -56,6 +53,8 @@ defmodule Day23.A do
   defp apply_instruction(%State{a: a} = state, {:jump_if_one, :a, offset}) when a == 1, do: jump(state, offset)
   defp apply_instruction(%State{b: b} = state, {:jump_if_one, :b, offset}) when b == 1, do: jump(state, offset)
   defp apply_instruction(state, {:jump_if_one, _reg, _offset}), do: jump(state, 1)
+
+  defp advance(state), do: jump(state, 1)
 
   defp jump(state, offset) do
     struct(state, [
