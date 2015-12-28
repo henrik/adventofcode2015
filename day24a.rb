@@ -1,8 +1,8 @@
 weights = DATA.each_line.map(&:to_i).sort.reverse
-group_weight = weights.inject(:+) / 4
+group_weight = weights.inject(:+) / 3
 
-# Reached the number 5 by trial and error (4 gave 0 results etc).
-p weights.combination(5).select { |x| x.inject(:+) == group_weight }.map { |x| x.inject(:*) }.min
+# Reached the number 6 by trial and error (5 gave 0 results etc).
+p weights.combination(6).select { |x| x.inject(:+) == group_weight }.map { |x| x.inject(:*) }.min
 
 __END__
 1
