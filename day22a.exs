@@ -152,7 +152,8 @@ defmodule AoC do
 
     def run_async(all_spells, this_spell, fight_state) do
       # Temp for debug
-      #:timer.sleep 500
+      # TODO: sleep makes it return an answer sooner. because of depth vs breadth?
+      :timer.sleep 500
       Task.async(fn -> Runner.run(all_spells, this_spell, fight_state) end)
     end
   end
