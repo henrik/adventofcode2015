@@ -5,8 +5,7 @@ defmodule AoC do
     def all do
       [
         %Spell{name: "Magic Missile", cost: 53, turns: 0, instantly: [damage: 4]},
-        # Commented this out after realizing it's probably never a good choice (since the net result is that the boss does you more net damage.)
-        #%Spell{name: "Drain", cost: 73, turns: 0, instantly: [damage: 2, heal: 2]},
+        %Spell{name: "Drain", cost: 73, turns: 0, instantly: [damage: 2, heal: 2]},
         %Spell{name: "Shield", cost: 113, turns: 6, effect_start: [armor: 7], effect_end: [armor: -7]},
         %Spell{name: "Poison", cost: 173, turns: 6, effect_each: [damage: 3]},
         %Spell{name: "Recharge", cost: 229, turns: 5, effect_each: [mana: 101]},
@@ -67,8 +66,6 @@ defmodule AoC do
             :won
           me.hp <= 0 ->
             :lost
-          me.mana == 0 ->
-            :lost
           true ->
             :ongoing
         end
@@ -123,45 +120,48 @@ defmodule AoC do
   end
 
   defmodule Runner do
+    @known_bad 9999
+
     def run do
+      start_agent
       all_spells = Spell.all
       unstarted_fight = Fight.new
 
-      for next_spell <- all_spells, do: run_async(all_spells, next_spell, unstarted_fight)
+      costs = for next_spell <- all_spells, do: run(all_spells, next_spell, unstarted_fight)
+      IO.inspect cost: Enum.min(costs)
     end
 
     def run(all_spells, this_spell, fight) do
       fight_result = Fight.run(this_spell, fight)
 
+      known_min = get_min
+
       case fight_result do
+        %Fight{cost: cost} when cost >= known_min ->
+          known_min
         %Fight{state: :invalid} ->
-          :noop
-          #IO.write [IO.ANSI.yellow, "x", IO.ANSI.reset]
-        %Fight{state: :ongoing} = fight_state ->
-          #IO.puts "go on"
-          for next_spell <- all_spells, do: run_async(all_spells, next_spell, fight_state)
+          @known_bad
+        %Fight{state: :ongoing} ->
+          costs = for next_spell <- all_spells, do: run(all_spells, next_spell, fight_result)
+          new_min = Enum.min(costs)
+
+          set_min min(new_min, known_min)
+
+          new_min
         %Fight{state: :won} = fight ->
-          IO.puts [IO.ANSI.green, "won! ", IO.ANSI.reset, " ", inspect(fight)]
-          IO.puts "won?!"
+          fight.cost
         %Fight{state: :lost} ->
-          #IO.write [IO.ANSI.red, ".", IO.ANSI.reset]
-          :noop
-          #IO.puts [IO.ANSI.red, "lose", IO.ANSI.reset]
+          @known_bad
       end
     end
 
-    def run_async(all_spells, this_spell, fight_state) do
-      # Temp for debug
-      # TODO: sleep makes it return an answer sooner. because of depth vs breadth?
-      :timer.sleep 500
-      Task.async(fn -> Runner.run(all_spells, this_spell, fight_state) end)
-    end
+    defp start_agent, do: Agent.start_link(fn -> @known_bad end, name: __MODULE__)
+    defp set_min(value), do: Agent.update(__MODULE__, fn _ -> value end)
+    defp get_min, do: Agent.get(__MODULE__, &(&1))
   end
 
   def run do
-    IO.puts "Running infinitely. Ctrl+C when happy…"
     Runner.run
-    :timer.sleep :infinity
   end
 end
 
