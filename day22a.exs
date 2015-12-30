@@ -124,14 +124,13 @@ defmodule AoC do
 
     def run do
       start_agent
-      all_spells = Spell.all
       unstarted_fight = Fight.new
 
-      costs = for next_spell <- all_spells, do: run(all_spells, next_spell, unstarted_fight)
+      costs = for next_spell <- Spell.all, do: run(next_spell, unstarted_fight)
       IO.inspect cost: Enum.min(costs)
     end
 
-    def run(all_spells, this_spell, fight) do
+    def run(this_spell, fight) do
       fight_result = Fight.run(this_spell, fight)
 
       known_min = get_min
@@ -142,7 +141,7 @@ defmodule AoC do
         %Fight{state: :invalid} ->
           @known_bad
         %Fight{state: :ongoing} ->
-          costs = for next_spell <- all_spells, do: run(all_spells, next_spell, fight_result)
+          costs = for next_spell <- Spell.all, do: run(next_spell, fight_result)
           new_min = Enum.min(costs)
 
           set_min min(new_min, known_min)
